@@ -1,14 +1,16 @@
 ﻿Shader "Custom/ProcessedCircle" {
-	Properties {
-		_Color ("Color", Color) = (1,1,1,1)
-		_Thickness ("Thickness", Range(0.0, 1.0)) = 0.1
-		_Radius ("Radius", Range(0.0, 1.0)) = 0.5
-		_State ("State", Range(0.0, 1.0)) = 0
-		_Rotation ("Rotation", Range(0.0, 360.0)) = 180
+	Properties{
+		_Color("Color", Color) = (1,1,1,1)
+		_Thickness("Thickness", Range(0.0, 1.0)) = 0.1
+		_Radius("Radius", Range(0.0, 1.0)) = 0.5
+		_State("State", Range(0.0, 1.0)) = 0
+		_Rotation("Rotation", Range(0.0, 360.0)) = 180
 	}
-	SubShader
+		SubShader
 	{
-		Tags {"Queue"="Transparent"}
+		Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+		LOD 100
+		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		Pass
 		{
@@ -38,5 +40,5 @@
 			ENDCG
 		}
 	}
-	FallBack "Diffuse"
+		FallBack "Diffuse"
 }
