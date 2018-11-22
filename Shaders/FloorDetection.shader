@@ -3,6 +3,7 @@
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 		_PanelTex("Panel tex", 2D) = "white" {}
+        [HDR]_EmissionColor("Emission color", Color) = (1, 1, 1, 1)
 		_Glossiness("Smoothness", Range(0,1)) = 0.5
 		_Metallic("Metallic", Range(0,1)) = 0.0
 		_Tiling("Tiling", Int) = 10
@@ -34,6 +35,7 @@
 			half _Glossiness;
 			half _Metallic;
 			fixed4 _Color;
+            fixed4 _EmissionColor;
 			float _Tiling;
 			float _State;
 			float _MaxDistance;
@@ -62,11 +64,13 @@
 
 			void surf(Input IN, inout SurfaceOutputStandard o) {
 				// Albedo comes from a texture tinted by color
-				fixed4 c = (1.0 - distanceWithStateAndDecay(tiledPos(IN.uv_MainTex))) * tex2D(_MainTex, IN.uv_MainTex) * _Color * tex2D(_PanelTex, posInPanel(IN.uv_MainTex));
+                float power = 1.0 - distanceWithStateAndDecay(tiledPos(IN.uv_MainTex));
+				fixed4 c = power * tex2D(_MainTex, IN.uv_MainTex) * _Color * tex2D(_PanelTex, posInPanel(IN.uv_MainTex));
 				o.Albedo = c.rgb;
 				// Metallic and smoothness come from slider variables
 				o.Metallic = _Metallic;
 				o.Smoothness = _Glossiness;
+                o.Emission = power * _EmissionColor;
 				o.Alpha = c.a;
 			}
 			ENDCG
