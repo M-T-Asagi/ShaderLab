@@ -8,6 +8,7 @@
         _Metallic ("Metallic", Range(0,1)) = 0.0
 		_EmissionTex("Albedo(RGB)", 2D) = "white"{}
 		[HDR]_EmissionColor("EmissionColor", Color) = (1, 1, 1, 1)
+		_BlackTransparency ("Transparency of black(1 is transparent)", Range(0, 1)) = 1
     }
     SubShader
     {
@@ -37,6 +38,7 @@
         half _Metallic;
         fixed4 _Color;
 		fixed4 _EmissionColor;
+		float _BlackTransparency;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -55,7 +57,7 @@
             o.Smoothness = _Glossiness;
 			fixed4 emTex = tex2D(_EmissionTex, IN.uv_MainTex);
 			o.Emission = emTex * _EmissionColor;
-			o.Alpha = c.a * (float)((emTex.r + emTex.g + emTex.b) / 3.0) * emTex.a;
+			o.Alpha = c.a * (1.0 - (1.0 - (float)((emTex.r + emTex.g + emTex.b) / 3.0)) * _BlackTransparency) * emTex.a;
         }
         ENDCG
     }
