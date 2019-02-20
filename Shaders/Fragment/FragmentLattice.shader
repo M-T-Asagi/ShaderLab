@@ -5,7 +5,8 @@
         _Color ("Color", Color) = (1,1,1,1)
 		_BarColor ("Bar color", Color) = (0, 0, 0, 0)
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
-		_NumOfSquare ("number of square", Int) = 10
+		_NumOfSquareX ("number of square x", Int) = 10
+		_NumOfSquareY ("number of square y", Int) = 10
         _LatticeThick ("Thickness(0 to 1)", Range(0.0, 1.0)) = 0.1
     }
     SubShader
@@ -31,7 +32,8 @@
 
 			fixed4 _Color;
 			fixed4 _BarColor;
-			int _NumOfSquare;
+			int _NumOfSquareX;
+			int _NumOfSquareY;
 			float _LatticeThick;
 
 			// Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
@@ -43,12 +45,12 @@
 
 			float2 tiledPos(float2 _pos)
 			{
-				return (floor(_pos * _NumOfSquare) + float2(0.5, 0.5)) / _NumOfSquare;
+				return (floor(_pos * float2(_NumOfSquareX, _NumOfSquareY)) + float2(0.5, 0.5)) / float2(_NumOfSquareX, _NumOfSquareY);
 			}
 
 			float2 posInPanel(float2 _pos)
 			{
-				return frac(_pos * _NumOfSquare);
+				return frac(_pos * float2(_NumOfSquareX, _NumOfSquareY));
 			}
 
 			fixed4 frag(v2f_img i) : SV_Target {
