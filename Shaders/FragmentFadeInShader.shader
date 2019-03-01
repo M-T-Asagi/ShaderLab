@@ -56,7 +56,7 @@
             float dbauc = distance(IN.uv_MainTex, float2(0.5, 0.5));
             int isIn = step(dbauc, _State * 0.5);
             o.Alpha = c.a * (isIn + (1 - isIn) * (1 - min(distance(_State * 0.5, dbauc) / (_Thickness * 0.5), 1)));
-            //o.Emission = _EmissionColor;
+            o.Emission = _EmissionColor * o.Alpha;
         }
         ENDCG
     }
