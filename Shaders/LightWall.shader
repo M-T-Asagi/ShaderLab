@@ -6,7 +6,7 @@
 		_Seed("randomize seed", Float) = 100
 		_TimeScale("time scale", Float) = 1
 		_WaveScale ("wave scale", Int) = 1.0
-		_WaveMaxMoves ("wave moves", Range(0, 1)) = 0.5 
+		_WaveMaxMoves ("wave moves", Range(0, 1)) = 0.5
 		_RandomScale ("randomed number scale", Float) = 10
 	}
 
