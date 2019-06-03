@@ -1,4 +1,4 @@
-﻿Shader "Custom/SonarManually" {
+﻿Shader "AsagiShader/Sonar" {
 	Properties{
 		_BackgroundTex("Main texture(RGB)", 2D) = "white"{}
 		_BackgroundColor("Background Color", Color) = (0,0,0,1)
@@ -7,7 +7,8 @@
 		_UpFade("Fade of up on line center", Range(0.0, 1.0)) = 0.1
 		_DownFade("Fade of under line center", Range(0.0, 1.0)) = 0.1
 		_Tickness("Tickness", Range(0.0, 1.0)) = 0.1
-		_State("State", Range(-2.0, 3.0)) = -1
+		_SpawnSpan("Spawn time", Float) = 3
+		_LoopTime("Loop time", Float) = 3
 	}
 
 		SubShader
@@ -26,7 +27,8 @@
 				float _UpFade;
 				float _DownFade;
 				float _Tickness;
-				float _State;
+				float _SpawnSpan;
+				float _LoopTime;
 
 				float getLinePower(float pos, float lineCenter)
 				{
@@ -37,11 +39,19 @@
 						step(lineTop, pos) * max((_UpFade - distance(lineTop, pos)) / _UpFade, 0);
 				}
 
-				fixed4 frag(v2f_img i) : SV_Target{
-					float power = getLinePower(i.uv.y, _State);
+				fixed4 frag(v2f_img i) : SV_Target {
+					float percentOfSpawnSpan = _SpawnSpan / _LoopTime;
+					float lastSpawned = floor(_Time.y / _SpawnSpan) * _SpawnSpan;
+					float elapsedTimeSinceLastSpawned = _Time.y - lastSpawned;
+					float elapsedPercentSinceLastSpawned = elapsedTimeSinceLastSpawned / _LoopTime;
+					float thisYInWhatNumOfSpawned = floor((i.uv.y - elapsedPercentSinceLastSpawned) / percentOfSpawnSpan);
+					float bottomPower = getLinePower(i.uv.y, thisYInWhatNumOfSpawned * percentOfSpawnSpan + elapsedPercentSinceLastSpawned);
+					float topPower = getLinePower(i.uv.y, (thisYInWhatNumOfSpawned + 1) * percentOfSpawnSpan + elapsedPercentSinceLastSpawned);
+					float power = min(topPower + bottomPower, 1);
 					fixed4 col = power * _LineColor * tex2D(_LineTex, i.uv) + (1 - power) * _BackgroundColor * tex2D(_BackgroundTex, i.uv);
 					return col;
 				}
+
 				ENDCG
 			}
 		}
