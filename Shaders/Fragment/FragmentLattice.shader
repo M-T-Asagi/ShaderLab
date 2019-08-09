@@ -12,7 +12,11 @@
     SubShader
     {
 		Pass {
-			Tags { "RenderType"="Opaque" }
+			Tags{
+                "RenderType" = "Transparent"
+                "Queue" = "Transparent"
+            }
+            Blend SrcAlpha OneMinusSrcAlpha
 			LOD 200
 
 			CGPROGRAM
@@ -57,7 +61,7 @@
 				float2 pos = posInPanel(i.uv);
 				float isLattice = (step(0, pos.x) * (1 - step(_LatticeThick, pos.x))) + (step(pos.x, 1) * (1 - step(pos.x, 1 - _LatticeThick))) + 
 					(step(0, pos.y) * (1 - step(_LatticeThick, pos.y))) + (step(pos.y, 1) * (1 - step(pos.y, 1 - _LatticeThick)));
-				return _Color * (1 - isLattice) + _BarColor * isLattice;
+				return (_Color * (1 - isLattice) + _BarColor * isLattice) * tex2D(_MainTex, i.uv);
 			}
         
 			ENDCG
