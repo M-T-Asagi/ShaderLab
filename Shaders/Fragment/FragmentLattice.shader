@@ -16,6 +16,7 @@
                 "RenderType" = "Transparent"
                 "Queue" = "Transparent"
             }
+            ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
 			LOD 200
 
